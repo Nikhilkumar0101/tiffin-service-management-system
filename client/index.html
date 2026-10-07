@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Comfort Box — Home-Cooked Tiffin Delivered Daily</title>
+  <meta name="description"
+    content="The Comfort Box delivers fresh, home-style Indian tiffin meals to your doorstep every day. Subscribe to a plan and enjoy healthy, delicious food without the hassle." />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/css/home.css">
+</head>
+
+<body>
+
+  <!-- ═══════════════════ NAVBAR ═══════════════════ -->
+  <nav class="tcb-nav" id="mainNav">
+    <div class="nav-inner">
+      <a class="tcb-logo" href="/">
+        <span class="logo-icon">🍱</span>
+        <span class="logo-text">The Comfort Box</span>
+      </a>
+      <div class="nav-links">
+        <a href="#features">Why Us</a>
+        <a href="#plans">Plans</a>
+        <a href="#how">How It Works</a>
+        <a href="#testimonials">Reviews</a>
+      </div>
+      <div class="nav-actions">
+        <button class="btn-ghost" id="navLoginBtn">Sign In</button>
+        <button class="btn-primary-nav" id="navRegisterBtn">Get Started →</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════ HERO ═══════════════════ -->
+  <section class="hero-section" id="home">
+    <div class="hero-inner">
+      <div class="hero-content">
+        <div class="hero-pill">🚀 Now delivering in your area</div>
+        <h1 class="hero-title">
+          Ghar jaisa khana,<br>
+          <span class="hero-highlight">delivered with love.</span>
+        </h1>
+        <p class="hero-desc">
+          Fresh, wholesome Indian meals cooked in small batches — just like your mom would make.
+          Subscribe to a weekly or monthly plan and forget the daily cooking stress.
+        </p>
+        <div class="hero-cta">
+          <button class="btn-hero-primary" id="heroGetStarted">Start Your Subscription →</button>
+          <button class="btn-hero-ghost" id="heroLearnMore">See Today's Menu ↓</button>
+        </div>
+        <div class="hero-trust">
+          <div class="trust-item"><span class="trust-icon">✅</span> No preservatives</div>
+          <div class="trust-item"><span class="trust-icon">🏠</span> Home-style cooking</div>
+          <div class="trust-item"><span class="trust-icon">🚴</span> Daily delivery</div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-card-float">
+          <div class="float-badge">⭐ 4.9 / 5 Rating</div>
+          <img src="/hero-food.png" alt="Delicious tiffin meal from The Comfort Box" class="hero-food-img" />
+          <div class="float-stats">
+            <div class="fstat"><strong>2,400+</strong><span>Happy Customers</span></div>
+            <div class="fstat-divider"></div>
+            <div class="fstat"><strong>50,000+</strong><span>Meals Delivered</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ FEATURES ═══════════════════ -->
+  <section class="features-section" id="features">
+    <div class="section-container">
+      <div class="section-tag">Why Choose Us</div>
+      <h2 class="section-title">More than just food.<br>It's a daily comfort.</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon" style="background: #fff4e6; color: #f97316;">🥗</div>
+          <h3>100% Fresh Ingredients</h3>
+          <p>Sourced daily from local vendors. No frozen, no packaged. Just real, fresh produce every single day.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="background: #e8f5e9; color: #22c55e;">🧑‍🍳</div>
+          <h3>Experienced Home Cooks</h3>
+          <p>Our cooks bring decades of family recipes and genuine love into every meal they prepare for you.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="background: #ede9fe; color: #7c3aed;">⏰</div>
+          <h3>Always On Time</h3>
+          <p>Lunch by 12:30 PM and dinner by 7:30 PM — rain or shine. We take punctuality seriously.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="background: #fce7f3; color: #db2777;">💰</div>
+          <h3>Affordable Plans</h3>
+          <p>Starting at just ₹80/day. Flexible weekly & monthly plans so you only pay for what you need.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="background: #e0f2fe; color: #0284c7;">📱</div>
+          <h3>Easy Management</h3>
+          <p>Track your subscription, view today's menu, and manage deliveries all from your personal dashboard.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="background: #fef9c3; color: #ca8a04;">🌿</div>
+          <h3>Balanced Nutrition</h3>
+          <p>Dal, sabzi, roti, rice, salad — every meal is designed to be nutritionally balanced and satisfying.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ PLANS PREVIEW ═══════════════════ -->
+  <section class="plans-section" id="plans">
+    <div class="section-container">
+      <div class="section-tag">Our Meal Plans</div>
+      <h2 class="section-title">Simple, flexible pricing</h2>
+      <p class="section-subtitle">Choose a plan that fits your lifestyle. No hidden charges, no commitment traps.</p>
+      <div class="plans-grid" id="homePlansGrid">
+        <!-- filled by JS -->
+        <div class="plan-skeleton"></div>
+        <div class="plan-skeleton"></div>
+        <div class="plan-skeleton featured"></div>
+        <div class="plan-skeleton"></div>
+      </div>
+      <div class="plans-cta">
+        <button class="btn-hero-primary" id="plansSignupBtn">Subscribe to a Plan →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ HOW IT WORKS ═══════════════════ -->
+  <section class="how-section" id="how">
+    <div class="section-container">
+      <div class="section-tag">How It Works</div>
+      <h2 class="section-title">Ready in 3 simple steps</h2>
+      <div class="steps-row">
+        <div class="step-card">
+          <div class="step-num">01</div>
+          <div class="step-icon">📝</div>
+          <h3>Create Account</h3>
+          <p>Register for free in under a minute. Just your name, email, and phone number.</p>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step-card">
+          <div class="step-num">02</div>
+          <div class="step-icon">📦</div>
+          <h3>Pick a Plan</h3>
+          <p>Choose from daily, weekly, or monthly plans for lunch, dinner, or both.</p>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step-card">
+          <div class="step-num">03</div>
+          <div class="step-icon">🛵</div>
+          <h3>Enjoy Delivery</h3>
+          <p>Sit back and relax — fresh tiffin arrives at your doorstep right on time, every day.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ TODAY'S MENU PREVIEW ═══════════════════ -->
+  <section class="menu-preview-section" id="menu-preview">
+    <div class="section-container">
+      <div class="section-tag">Today's Menu</div>
+      <h2 class="section-title">What's cooking today?</h2>
+      <div class="menu-preview-card" id="menuPreviewCard">
+        <div class="menu-loading">Loading today's menu…</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ TESTIMONIALS ═══════════════════ -->
+  <section class="testimonials-section" id="testimonials">
+    <div class="section-container">
+      <div class="section-tag">Customer Love</div>
+      <h2 class="section-title">What our subscribers say</h2>
+      <div class="testimonials-grid">
+        <div class="testi-card">
+          <div class="testi-stars">⭐⭐⭐⭐⭐</div>
+          <p>"I've been subscribing for 3 months now. The dal and roti reminds me exactly of my mom's cooking.
+            Absolutely love it!"</p>
+          <div class="testi-author">
+            <div class="testi-avatar" style="background:#f97316;">P</div>
+            <div><strong>Priya Sharma</strong><span>Working Professional, Pune</span></div>
+          </div>
+        </div>
+        <div class="testi-card featured-testi">
+          <div class="testi-stars">⭐⭐⭐⭐⭐</div>
+          <p>"As a student living alone, this is a lifesaver. Healthy food on time without spending a fortune. The
+            weekly veg plan is perfect!"</p>
+          <div class="testi-author">
+            <div class="testi-avatar" style="background:#7c3aed;">R</div>
+            <div><strong>Rahul Mehta</strong><span>Engineering Student, Kolkata</span></div>
+          </div>
+        </div>
+        <div class="testi-card">
+          <div class="testi-stars">⭐⭐⭐⭐⭐</div>
+          <p>"Been using The Comfort Box for our office team. The monthly premium plan is unbeatable value. Delivery is
+            always punctual."</p>
+          <div class="testi-author">
+            <div class="testi-avatar" style="background:#0284c7;">A</div>
+            <div><strong>Anita Joshi</strong><span>Office Manager, Mumbai</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ FOOTER ═══════════════════ -->
+  <footer class="tcb-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="logo-icon">🍱</span>
+        <span class="logo-text">The Comfort Box</span>
+        <p>Fresh, home-style tiffin delivered<br>to your doorstep every day.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Quick Links</h4>
+        <a href="#features">Why Us</a>
+        <a href="#plans">Plans</a>
+        <a href="#how">How It Works</a>
+        <a href="#testimonials">Reviews</a>
+      </div>
+      <div class="footer-links">
+        <h4>Account</h4>
+        <a href="#" id="footerLogin">Sign In</a>
+        <a href="#" id="footerRegister">Create Account</a>
+      </div>
+      <div class="footer-contact">
+        <h4>Contact</h4>
+        <p>📞 +91 98765 43210</p>
+        <p>📧 hello@thecomfortbox.in</p>
+        <p>📍 Serving all over Chandigarh</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 The Comfort Box. Made with ❤️ for food lovers.</span>
+    </div>
+  </footer>
+
+  <!-- ═══════════════════ AUTH MODAL ═══════════════════ -->
+  <div class="tcb-modal-overlay" id="authOverlay">
+    <div class="tcb-modal" id="authModal">
+      <button class="modal-close" id="modalClose">✕</button>
+
+      <div class="modal-logo">
+        <span class="logo-icon">🍱</span>
+        <span class="logo-text">The Comfort Box</span>
+      </div>
+
+      <div class="modal-tabs">
+        <button class="mtab active" id="tabLogin" data-tab="login">Sign In</button>
+        <button class="mtab" id="tabRegister" data-tab="register">Create Account</button>
+      </div>
+
+      <div id="alertBox"></div>
+
+      <!-- Login Form -->
+      <form id="loginForm" class="modal-form">
+        <div class="mform-group">
+          <label>Email Address</label>
+          <input type="email" id="loginEmail" placeholder="you@example.com" required />
+        </div>
+        <div class="mform-group">
+          <label>Password</label>
+          <input type="password" id="loginPassword" placeholder="••••••••" required />
+        </div>
+        <button type="submit" class="btn-modal-submit" id="loginSubmitBtn">Sign In →</button>
+      </form>
+
+      <!-- Register Form -->
+      <form id="registerForm" class="modal-form hidden">
+        <div class="mform-row">
+          <div class="mform-group">
+            <label>Full Name</label>
+            <input type="text" id="regName" placeholder="Your name" required />
+          </div>
+          <div class="mform-group">
+            <label>Phone Number</label>
+            <input type="text" id="regPhone" placeholder="9876543210" />
+          </div>
+        </div>
+        <div class="mform-group">
+          <label>Email Address</label>
+          <input type="email" id="regEmail" placeholder="you@example.com" required />
+        </div>
+        <div class="mform-group">
+          <label>Password</label>
+          <input type="password" id="regPassword" placeholder="Choose a strong password" required />
+        </div>
+        <button type="submit" class="btn-modal-submit" id="registerSubmitBtn">Create My Account →</button>
+      </form>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/index.js"></script>
+</body>
+
+</html>

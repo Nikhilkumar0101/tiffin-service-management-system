@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Dashboard — The Comfort Box</title>
+  <meta name="description" content="Manage your tiffin meal subscriptions, view today's menu, and track your plan history." />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .user-tab-btn {
+      padding: .45rem 1.1rem;
+      border-radius: 2rem;
+      border: 1.5px solid var(--border, #2a2a2a);
+      background: transparent;
+      color: var(--text-muted, #aaa);
+      font-size: .84rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .user-tab-btn.active {
+      background: var(--accent, #f97316);
+      border-color: var(--accent, #f97316);
+      color: #fff;
+    }
+    .sub-active-card { padding: .6rem 0; }
+    .sub-active-card + .sub-active-card { border-top: 1px solid var(--border, #222); }
+    .map-hint { font-size: .78rem; color: var(--text-muted, #aaa); padding: .5rem 1rem; background: var(--surface, #1a1a1a); border-bottom: 1px solid var(--border, #222); }
+    .selected-addr { padding: .6rem 1rem; font-size: .82rem; background: var(--surface, #1a1a1a); border-top: 1px solid var(--border, #222); }
+    #leafletMap { height: 400px; width: 100%; }
+    .profile-avatar { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg,#f97316,#ef4444); display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #fff; margin: 0 auto 1rem; }
+    .active-sub-badge { background: #22c55e1a; color: #22c55e; border: 1px solid #22c55e44; border-radius: .4rem; padding: .15rem .55rem; font-size: .7rem; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+  <!-- ── Navbar ── -->
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand" href="/">🍱 The Comfort Box</a>
+      <div class="ms-auto d-flex align-items-center gap-3">
+        <span class="navbar-text" id="userBadge"></span>
+        <button class="btn btn-outline-light btn-sm" id="logoutBtn">Sign Out</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── Alert zone ── -->
+  <div class="container-fluid px-4">
+    <div id="pageAlert" class="mt-2"></div>
+  </div>
+
+  <div class="container-fluid px-4 py-4">
+
+    <!-- ── Greeting + Stats ── -->
+    <div class="mb-3">
+      <h1 class="fs-4 fw-800 mb-1" id="greetingTitle">Welcome back 👋</h1>
+      <p class="text-muted mb-3" style="font-size:.85rem;">Here's a summary of your tiffin account today.</p>
+      <div class="row g-3" id="statsRow"></div>
+    </div>
+
+    <!-- ── Nav Tabs ── -->
+    <div class="d-flex gap-2 mb-4">
+      <button class="user-tab-btn active" id="tabDashboard" onclick="switchUserTab('dashboard')">📊 Dashboard</button>
+      <button class="user-tab-btn" id="tabProfile" onclick="switchUserTab('profile')">👤 My Profile</button>
+    </div>
+
+    <!-- ════════════════ DASHBOARD TAB ════════════════ -->
+    <div id="dashboardContent">
+      <div class="row g-4">
+
+        <!-- LEFT: Available Plans -->
+        <div class="col-xl-5 col-lg-6">
+          <div class="card h-100">
+            <div class="card-header d-flex align-items-center justify-content-between">
+              <span>🍽️ Available Plans</span>
+            </div>
+            <div class="card-body">
+              <div class="row g-3" id="plansContainer">
+                <div class="text-muted" style="font-size:.85rem;">Loading plans…</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MIDDLE: Subscribe Form + All Active Subscriptions -->
+        <div class="col-xl-4 col-lg-6">
+
+          <!-- New Subscription Form -->
+          <div class="card mb-4">
+            <div class="card-header">📋 New Subscription</div>
+            <div class="card-body">
+              <form id="subscribeForm" class="row g-3">
+                <div class="col-12">
+                  <label class="form-label">Select Plan</label>
+                  <select id="planSelect" class="form-select" required></select>
+                </div>
+                <div class="col-12">
+                  <label class="form-label">Delivery Address</label>
+                  <textarea id="addressInput" class="form-control" rows="2"
+                    placeholder="Enter your full address…" required></textarea>
+                  <button type="button" class="btn btn-outline-secondary btn-sm w-100 mt-2" id="openMapBtn">
+                    📍 Pick Location from Map
+                  </button>
+                </div>
+                <div class="col-12">
+                  <label class="form-label">Start Date</label>
+                  <input type="date" id="startDateInput" class="form-control" required>
+                </div>
+                <div class="col-12">
+                  <button class="btn btn-primary-custom w-100" type="submit" id="subscribeBtn">
+                    ✓ Subscribe Now
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- All Active Subscriptions -->
+          <div class="card">
+            <div class="card-header d-flex align-items-center justify-content-between">
+              <span>🎯 Active Subscriptions</span>
+              <span class="active-sub-badge" id="activeSubCount">0 active</span>
+            </div>
+            <div class="card-body" id="subscriptionBox" style="padding: .75rem;">
+              <div class="text-muted" style="font-size:.85rem;">Loading…</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- RIGHT: Today's Menu + History -->
+        <div class="col-xl-3 col-lg-12">
+
+          <!-- Today's Menu -->
+          <div class="card mb-4">
+            <div class="card-header">🌅 Today's Menu</div>
+            <div class="card-body" id="menuBox">
+              <div class="text-muted" style="font-size:.85rem;">Loading…</div>
+            </div>
+          </div>
+
+          <!-- Subscription History -->
+          <div class="card">
+            <div class="card-header">🕒 History</div>
+            <div class="card-body p-0">
+              <div class="history-table-wrap">
+                <table class="table table-bordered mb-0">
+                  <thead>
+                    <tr><th>Plan</th><th>Status</th><th>Start</th></tr>
+                  </thead>
+                  <tbody id="historyTable">
+                    <tr><td colspan="3" class="text-center text-muted py-3" style="font-size:.8rem;">Loading…</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════ PROFILE TAB ════════════════ -->
+    <div id="profileContent" style="display:none;">
+      <div class="row g-4">
+
+        <!-- Edit Profile -->
+        <div class="col-lg-6">
+          <div class="card">
+            <div class="card-header">✏️ Edit Profile</div>
+            <div class="card-body">
+              <div class="profile-avatar" id="profileAvatar">👤</div>
+              <form id="profileForm" class="row g-3">
+                <div class="col-12">
+                  <label class="form-label">Full Name</label>
+                  <input type="text" id="profileName" class="form-control" placeholder="Your name" required />
+                </div>
+                <div class="col-12">
+                  <label class="form-label">Phone Number</label>
+                  <input type="text" id="profilePhone" class="form-control" placeholder="9876543210" />
+                </div>
+                <div class="col-12">
+                  <label class="form-label">Default Delivery Address</label>
+                  <textarea id="profileAddress" class="form-control" rows="2"
+                    placeholder="Your default delivery address"></textarea>
+                  <button type="button" class="btn btn-outline-secondary btn-sm w-100 mt-2" id="openProfileMapBtn">
+                    📍 Pick Location from Map
+                  </button>
+                </div>
+                <div class="col-12">
+                  <button type="submit" class="btn btn-primary-custom w-100" id="saveProfileBtn">
+                    Save Changes
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- Change Password -->
+        <div class="col-lg-6">
+          <div class="card">
+            <div class="card-header">🔒 Change Password</div>
+            <div class="card-body">
+              <p style="font-size:.82rem;color:var(--text-muted);" class="mb-3">
+                After changing your password, you will be logged out and will need to sign in again.
+              </p>
+              <form id="passwordForm" class="row g-3">
+                <div class="col-12">
+                  <label class="form-label">Current Password</label>
+                  <input type="password" id="oldPassword" class="form-control"
+                    placeholder="Your current password" required />
+                </div>
+                <div class="col-12">
+                  <label class="form-label">New Password</label>
+                  <input type="password" id="newPassword" class="form-control"
+                    placeholder="Min. 6 characters" required minlength="6" />
+                </div>
+                <div class="col-12">
+                  <label class="form-label">Confirm New Password</label>
+                  <input type="password" id="confirmPassword" class="form-control"
+                    placeholder="Re-enter new password" required />
+                </div>
+                <div class="col-12">
+                  <button type="submit" class="btn btn-dark w-100" id="changePassBtn">
+                    Update Password
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /container -->
+
+
+  <!-- ════ MAP MODAL ════ -->
+  <div class="modal fade" id="mapModal" tabindex="-1" aria-labelledby="mapModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;">
+        <div class="modal-header" style="border-color:var(--border);">
+          <h5 class="modal-title" id="mapModalLabel">📍 Select Delivery Location</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-0">
+          <div class="map-hint">🖱️ Click anywhere on the map to pin your delivery location. Your GPS will auto-center the map.</div>
+          <div id="leafletMap"></div>
+          <div class="selected-addr">
+            <strong>📌 Selected:</strong>
+            <span id="selectedAddressDisplay" style="color:var(--text-muted);">None — click on the map to select</span>
+          </div>
+        </div>
+        <div class="modal-footer" style="border-color:var(--border);">
+          <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary-custom btn-sm" id="useAddressBtn" disabled>
+            ✓ Use This Location
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ CANCEL CONFIRMATION MODAL ════ -->
+  <div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);">
+        <div class="modal-header" style="border-color:var(--border);">
+          <h5 class="modal-title" id="cancelModalLabel">⚠️ Cancel Subscription</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" style="color:var(--text-dim);font-size:.88rem;">
+          Are you sure you want to cancel this subscription? This action cannot be undone. Your record will be kept for history.
+        </div>
+        <div class="modal-footer" style="border-color:var(--border);">
+          <button type="button" class="btn btn-outline-light btn-sm" data-bs-dismiss="modal">Keep It</button>
+          <button type="button" class="btn btn-cancel" id="confirmCancelBtn">Yes, Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ FIXED TOAST NOTIFICATION (always visible, no scrolling) ════ -->
+  <div id="fixedToast" style="
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    z-index: 10000;
+    max-width: 380px;
+    min-width: 260px;
+    display: none;
+    animation: slideIn .25s ease;
+  "></div>
+  <style>
+    @keyframes slideIn {
+      from { transform: translateY(20px); opacity: 0; }
+      to   { transform: translateY(0);    opacity: 1; }
+    }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="/js/user.js"></script>
+</body>
+</html>
