@@ -61,7 +61,7 @@ A full-stack web application for managing a home-based tiffin (meal delivery) se
 ## 📁 Project Structure
 
 ```
-tiffin-service-project/
+tiffin-service-management-system/
 │
 ├── client/                        # Frontend
 │   ├── css/
@@ -115,7 +115,7 @@ tiffin-service-project/
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/<your-username>/tiffin-service-management-system.git
+git clone https://github.com/Nikhilkumar0101/tiffin-service-management-system.git
 cd tiffin-service-management-system
 
 # 2. Install dependencies
