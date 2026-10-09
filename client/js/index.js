@@ -127,12 +127,13 @@ regForm.addEventListener("submit", async (e) => {
   const phone    = document.getElementById("regPhone").value.trim();
   const email    = document.getElementById("regEmail").value.trim();
   const password = document.getElementById("regPassword").value;
+  const address  = document.getElementById("regAddress").value.trim();
 
   try {
     const res  = await fetch("/api/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, phone, email, password })
+      body: JSON.stringify({ name, phone, email, password, address })
     });
     const data = await res.json();
 

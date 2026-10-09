@@ -145,7 +145,7 @@ async function loadDashboard() {
 
     document.getElementById("menuPreview").innerHTML = `
       <div style="font-size:.72rem;color:var(--text-muted);margin-bottom:.85rem;font-weight:600;text-transform:uppercase;letter-spacing:.8px;">
-        📅 ${statsData.menu.date}
+        📅 ${statsData.menu.date}${statsData.menu.isFallback ? ` · carried over from ${statsData.menu.sourceDate || "default menu"} (not updated today)` : ""}
       </div>
       <div class="row g-2">
         <div class="col-md-6">
@@ -364,5 +364,52 @@ document.getElementById("menuForm").addEventListener("submit", async (e) => {
   }
 });
 
+/* ── Users tab (all registered users) ────────────────────── */
+let allUsers = [];
+
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>"']/g, (ch) => (
+    { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]
+  ));
+}
+
+function renderUsers(users) {
+  document.getElementById("usersCount").textContent = users.length;
+  document.getElementById("usersTable").innerHTML = users.length
+    ? users.map((u, i) => `
+      <tr>
+        <td>${i + 1}</td>
+        <td>${escapeHtml(u.name)}</td>
+        <td>${escapeHtml(u.email)}</td>
+        <td>${escapeHtml(u.phone) || "—"}</td>
+        <td style="min-width:160px;">${escapeHtml(u.address) || "—"}</td>
+        <td>${new Date(u.joinedAt).toLocaleDateString("en-IN")}</td>
+        <td>${u.activeSubscriptions} / ${u.totalSubscriptions}</td>
+      </tr>`).join("")
+    : `<tr><td colspan="7" class="text-center text-muted">No users found.</td></tr>`;
+}
+
+async function loadUsers() {
+  try {
+    const res  = await fetch("/api/admin/users", { headers: authHeaders() });
+    const data = await res.json();
+    allUsers = data.users || [];
+    applyUserSearch();
+  } catch (err) {
+    console.error("Load users error:", err);
+  }
+}
+
+function applyUserSearch() {
+  const q = document.getElementById("userSearch").value.trim().toLowerCase();
+  renderUsers(
+    q ? allUsers.filter(u => u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q)) : allUsers
+  );
+}
+
+document.getElementById("userSearch").addEventListener("input", applyUserSearch);
+document.querySelector('[data-bs-target="#usersTab"]').addEventListener("shown.bs.tab", loadUsers);
+
 /* ── Init ────────────────────────────────────────────────── */
 loadDashboard();
+loadUsers();

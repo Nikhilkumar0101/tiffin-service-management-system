@@ -281,7 +281,7 @@
           </div>
           <div class="mform-group">
             <label>Phone Number</label>
-            <input type="text" id="regPhone" placeholder="9876543210" />
+            <input type="text" id="regPhone" placeholder="9876543210" required />
           </div>
         </div>
         <div class="mform-group">
@@ -291,6 +291,11 @@
         <div class="mform-group">
           <label>Password</label>
           <input type="password" id="regPassword" placeholder="Choose a strong password" required />
+        </div>
+        <div class="mform-group">
+          <label>Permanent Address</label>
+          <textarea id="regAddress" placeholder="Flat / House no., Street, Area, City" rows="2" style="resize:none;"
+            required></textarea>
         </div>
         <button type="submit" class="btn-modal-submit" id="registerSubmitBtn">Create My Account →</button>
       </form>

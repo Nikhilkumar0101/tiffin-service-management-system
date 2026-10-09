@@ -4,13 +4,9 @@ const bcrypt       = require("bcryptjs");
 const User         = require("../models/User");
 const Plan         = require("../models/Plan");
 const Subscription = require("../models/Subscription");
-const Menu         = require("../models/Menu");
 const { verifyToken } = require("../middleware/auth");
-
-const DEFAULT_MENU_ITEMS = {
-  lunch:  ["Dal", "Rice", "Roti", "Salad"],
-  dinner: ["Paneer Curry", "Roti", "Rice", "Dessert"],
-};
+const getTodayMenu = require("../utils/menu");
+const expireOldSubscriptions = require("../utils/expireSubscriptions");
 
 /* ── GET /api/user/:id/dashboard ─────────────────────────── */
 router.get("/user/:id/dashboard", verifyToken, async (req, res) => {
@@ -20,6 +16,8 @@ router.get("/user/:id/dashboard", verifyToken, async (req, res) => {
       return res.status(403).json({ success: false, message: "Not authorized." });
     }
 
+    await expireOldSubscriptions();   // auto-mark finished subscriptions as Expired
+
     const user = await User.findById(userId).select("-password");
     if (!user) return res.status(404).json({ success: false, message: "User not found." });
 
@@ -28,10 +26,7 @@ router.get("/user/:id/dashboard", verifyToken, async (req, res) => {
       Plan.find({ isActive: true }).sort({ price: 1 }),
     ]);
 
-    const today = new Date().toISOString().slice(0, 10);
-    let menu = await Menu.findOne({ date: today });
-    if (!menu) menu = await Menu.findOne().sort({ date: -1 });
-    if (!menu) menu = { date: today, ...DEFAULT_MENU_ITEMS };
+    const menu = await getTodayMenu();   // today's menu (falls back to latest past menu)
 
     /* Active + Paused subscriptions (both "current") */
     const activeSubscriptions = userSubs

@@ -1,18 +1,18 @@
 require("dotenv").config();
-const express  = require("express");
-const path     = require("path");
+const express = require("express");
+const path = require("path");
 const connectDB = require("./server/config/db");
-const seedData  = require("./server/utils/seed");
+const seedData = require("./server/utils/seed");
 
 // Route imports
-const authRoutes         = require("./server/routes/auth");
-const planRoutes         = require("./server/routes/plans");
-const menuRoutes         = require("./server/routes/menu");
+const authRoutes = require("./server/routes/auth");
+const planRoutes = require("./server/routes/plans");
+const menuRoutes = require("./server/routes/menu");
 const subscriptionRoutes = require("./server/routes/subscriptions");
-const userRoutes         = require("./server/routes/user");
-const adminRoutes        = require("./server/routes/admin");
+const userRoutes = require("./server/routes/user");
+const adminRoutes = require("./server/routes/admin");
 
-const app  = express();
+const app = express();
 const PORT = process.env.PORT || 3000;
 
 /* ── Middleware ──────────────────────────────────────────── */

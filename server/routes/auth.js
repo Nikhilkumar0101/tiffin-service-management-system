@@ -16,10 +16,10 @@ function generateToken(user) {
 /* ── POST /api/register ──────────────────────────────────── */
 router.post("/register", async (req, res) => {
   try {
-    const { name, email, password, phone } = req.body;
+    const { name, email, password, phone, address } = req.body;
 
-    if (!name || !email || !password) {
-      return res.status(400).json({ success: false, message: "Name, email and password are required." });
+    if (!name || !email || !password || !address || !address.trim()) {
+      return res.status(400).json({ success: false, message: "Name, email, password and address are required." });
     }
 
     const existing = await User.findOne({ email: email.toLowerCase().trim() });
@@ -33,6 +33,7 @@ router.post("/register", async (req, res) => {
       email: email.toLowerCase().trim(),
       password: hashedPassword,
       phone: phone || "",
+      address: address.trim(),
       role: "user",
     });
 

@@ -128,8 +128,23 @@ router.patch("/subscriptions/:id/resume", verifyToken, async (req, res) => {
       return res.status(400).json({ success: false, message: "Only paused subscriptions can be resumed." });
     }
 
+    const today = new Date().toISOString().slice(0, 10);
+
+    // Extend endDate by the number of days the subscription stayed paused,
+    // so the user does not lose the days they paused.
+    const MS_PER_DAY = 24 * 60 * 60 * 1000;
+    const pausedDays = Math.max(
+      0,
+      Math.round((new Date(today) - new Date(sub.pausedAt)) / MS_PER_DAY)
+    );
+    if (pausedDays > 0 && sub.endDate) {
+      const newEnd = new Date(sub.endDate);
+      newEnd.setDate(newEnd.getDate() + pausedDays);
+      sub.endDate = newEnd.toISOString().slice(0, 10);
+    }
+
     sub.status    = "Active";
-    sub.resumedAt = new Date().toISOString().slice(0, 10);
+    sub.resumedAt = today;
     await sub.save();
 
     res.json({ success: true, message: "Subscription resumed.", subscription: sub });

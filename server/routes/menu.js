@@ -2,19 +2,12 @@ const express = require("express");
 const router  = express.Router();
 const Menu    = require("../models/Menu");
 const { verifyToken, requireAdmin } = require("../middleware/auth");
-
-const DEFAULT_MENU = {
-  lunch:  ["Dal", "Rice", "Roti", "Salad"],
-  dinner: ["Paneer Curry", "Roti", "Rice", "Dessert"],
-};
+const getTodayMenu = require("../utils/menu");
 
 /* ── GET /api/menu — public ──────────────────────────────── */
 router.get("/menu", async (req, res) => {
   try {
-    const today = new Date().toISOString().slice(0, 10);
-    let menu = await Menu.findOne({ date: today });
-    if (!menu) menu = await Menu.findOne().sort({ date: -1 });
-    if (!menu) menu = { date: today, ...DEFAULT_MENU };
+    const menu = await getTodayMenu();
     res.json({ success: true, menu });
   } catch (err) {
     res.status(500).json({ success: false, message: "Server error." });

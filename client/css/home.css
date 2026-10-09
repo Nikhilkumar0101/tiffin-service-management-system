@@ -1017,7 +1017,8 @@ body {
   color: var(--text-muted);
 }
 
-.mform-group input {
+.mform-group input,
+.mform-group textarea {
   background: #f9f7f5;
   border: 1.5px solid #e7e3dc;
   border-radius: var(--radius-sm);
@@ -1029,11 +1030,13 @@ body {
   outline: none;
 }
 
-.mform-group input::placeholder {
+.mform-group input::placeholder,
+.mform-group textarea::placeholder {
   color: var(--text-light);
 }
 
-.mform-group input:focus {
+.mform-group input:focus,
+.mform-group textarea:focus {
   border-color: var(--amber);
   box-shadow: 0 0 0 3px rgba(249, 115, 22, .12);
   background: #fff;

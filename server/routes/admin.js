@@ -3,17 +3,15 @@ const router       = express.Router();
 const User         = require("../models/User");
 const Plan         = require("../models/Plan");
 const Subscription = require("../models/Subscription");
-const Menu         = require("../models/Menu");
 const { verifyToken, requireAdmin } = require("../middleware/auth");
-
-const DEFAULT_MENU_ITEMS = {
-  lunch:  ["Dal", "Rice", "Roti", "Salad"],
-  dinner: ["Paneer Curry", "Roti", "Rice", "Dessert"],
-};
+const getTodayMenu = require("../utils/menu");
+const expireOldSubscriptions = require("../utils/expireSubscriptions");
 
 /* ── GET /api/admin/dashboard ────────────────────────────── */
 router.get("/admin/dashboard", verifyToken, requireAdmin, async (req, res) => {
   try {
+    await expireOldSubscriptions();   // keep stats accurate
+
     const [totalUsers, totalPlans, totalSubscriptions, activeSubscriptions, pausedSubscriptions] =
       await Promise.all([
         User.countDocuments({ role: "user" }),
@@ -32,10 +30,7 @@ router.get("/admin/dashboard", verifyToken, requireAdmin, async (req, res) => {
     ]);
     const totalRevenue = revenueData[0]?.totalRevenue || 0;
 
-    const today = new Date().toISOString().slice(0, 10);
-    let menu = await Menu.findOne({ date: today });
-    if (!menu) menu = await Menu.findOne().sort({ date: -1 });
-    if (!menu) menu = { date: today, ...DEFAULT_MENU_ITEMS };
+    const menu = await getTodayMenu();   // today's menu (falls back to latest past menu)
 
     res.json({
       success: true,
@@ -51,6 +46,46 @@ router.get("/admin/dashboard", verifyToken, requireAdmin, async (req, res) => {
     });
   } catch (err) {
     console.error("Admin dashboard error:", err);
+    res.status(500).json({ success: false, message: "Server error." });
+  }
+});
+
+/* ── GET /api/admin/users — all registered users (admin only) ── */
+router.get("/admin/users", verifyToken, requireAdmin, async (req, res) => {
+  try {
+    const users = await User.find({ role: "user" })
+      .select("-password")
+      .sort({ createdAt: -1 });
+
+    /* Subscription counts per user (total + currently active) */
+    const counts = await Subscription.aggregate([
+      {
+        $group: {
+          _id: "$userId",
+          total:  { $sum: 1 },
+          active: { $sum: { $cond: [{ $eq: ["$status", "Active"] }, 1, 0] } },
+        },
+      },
+    ]);
+    const countMap = new Map(counts.map(c => [c._id.toString(), c]));
+
+    const result = users.map(u => {
+      const c = countMap.get(u._id.toString());
+      return {
+        id:                  u._id,
+        name:                u.name,
+        email:               u.email,
+        phone:               u.phone,
+        address:             u.address,
+        joinedAt:            u.createdAt,
+        totalSubscriptions:  c ? c.total  : 0,
+        activeSubscriptions: c ? c.active : 0,
+      };
+    });
+
+    res.json({ success: true, users: result });
+  } catch (err) {
+    console.error("Admin users error:", err);
     res.status(500).json({ success: false, message: "Server error." });
   }
 });
